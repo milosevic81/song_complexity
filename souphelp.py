@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
-class Soap(object):
+
+class Soup(object):
 
     def __init__(self):
         self.base_uri = "https://tekstovi.net/"
@@ -11,7 +12,6 @@ class Soap(object):
         artists = []
         url = self.base_artist.format(c)
         soup = BeautifulSoup(requests.get(url).text, "html.parser")
-        # <p class="artLyrList"><a href="2,4071,0.html">Zoran Cvetkovic - ZOK</a></p>
         for p in soup.find_all("p", {"class": "artLyrList"}):
             href = str(p.a.get('href'))
             id = int(href.split(',')[1])
@@ -24,7 +24,6 @@ class Soap(object):
 
     def get_songs(self, a):
         songs = []
-        print(a)
         soup = BeautifulSoup(requests.get(a["url"]).text, "html.parser")
         for p in soup.find_all("p", {"class": "artLyrList"}):
             href = str(p.a.get('href'))
@@ -41,4 +40,3 @@ class Soap(object):
         soup = BeautifulSoup(requests.get(s["url"]).text, "html.parser")
         p = soup.find("p", {"class": "lyric"})
         return p.text
-

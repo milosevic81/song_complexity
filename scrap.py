@@ -5,7 +5,7 @@ import zlib
 from progress.bar import Bar
 
 import dbhelp
-import soaphelp
+import souphelp
 
 """
 scrap https://tekstovi.net/2,E,0.html
@@ -18,7 +18,7 @@ db = sqlite3.connect('lyrics.db')
 
 
 def main():
-    soap = soaphelp.Soap()
+    soup = souphelp.Soup()
     sql = dbhelp.DbHelper(db)
 
     # calculate compressed length
@@ -35,7 +35,7 @@ def main():
     # get names of all artists
     letter = sql.get_last_letter() + 1
     for i, c in enumerate(string.ascii_uppercase[letter:]):
-        a = soap.get_artists(c)
+        a = soup.get_artists(c)
         sql.put_artists(a)
         sql.set_last_letter(letter + i)
 
@@ -44,7 +44,7 @@ def main():
     if artists:
         bar = Bar('Get songs', suffix='[%(index)d|%(max)d] avg %(avg)ds eta %(eta_td)s', max=len(artists))
         for a in artists:
-            songs = soap.get_songs(a)
+            songs = soup.get_songs(a)
             sql.put_songs(songs)
             sql.set_is_new(a, False)
             bar.next()
@@ -54,7 +54,7 @@ def main():
     if songs:
         bar = Bar('Get lyrics', suffix='[%(index)d|%(max)d] avg %(avg)ds eta %(eta_td)s', max=len(songs))
         for s in songs:
-            lyric = soap.get_lyric(s)
+            lyric = soup.get_lyric(s)
             sql.set_lyric(s, lyric)
             bar.next()
 
